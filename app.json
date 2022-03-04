@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "starter-kit",
-    "slug": "starter-kit",
+    "name": "Blog App",
+    "slug": "blog-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -25,7 +25,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.blog.asdfghjkl" 
     },
     "web": {
       "favicon": "./assets/images/favicon.png"
