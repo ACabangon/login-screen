@@ -8,7 +8,7 @@ import ViewWithLoading from '../components/ViewWithLoading';
 import { RootTabScreenProps } from '../types';
 import * as React from 'react';
 
-export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'>) {
+export default function TabTwoScreen({ navigation }: RootTabScreenProps<'TabOne'>) {
   
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState("");
@@ -157,15 +157,6 @@ const styles = StyleSheet.create({
   nobg:{
     backgroundColor: 'transparent',
     margin: 10, marginTop: 0
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
   },
   imagebg:{
     width: '100%', height: 650

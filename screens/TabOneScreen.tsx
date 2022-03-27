@@ -1,29 +1,27 @@
 import { StyleSheet, ImageBackground, Image, Alert} from 'react-native';
 import {Button} from "react-native-elements";
-import { useState } from 'react'
+import { useState, Fragment } from 'react';
 import { TextInput } from 'react-native-paper';
 import EditScreenInfo from '../components/EditScreenInfo';
 import { Text, View } from '../components/Themed';
 import * as React from 'react';
+import {Formik} from 'formik';
+//import * as yup from "yup";
+
 
 export default function TabOneScreen() {
 
-  const [email, setEmail] = useState<string>("");
-  const [fname, setFname] = useState<string>("");
-  const [lname, setLname] = useState<string>("");
-  const [password, setPassword] = useState("");
-  const [cpassword, setCpassword] = useState("");
   const [visible, setVisible] = useState(true);
 
-  const handleRegister = () => {
+  // const handleRegister = () => {
 
-    if (email === "" || fname === "" || lname === "" || password === "" || cpassword === "") {
-      return Alert.alert("Login failed", `please fill all the fields`);
-    }else if (password != cpassword){
-      return Alert.alert("Password incorrect", `the password you typed \n do not match`);
-    }
-      return Alert.alert("Registered successfully!", `You can now log in`);
-  }
+  //   if (email === "" || fname === "" || lname === "" || password === "" || cpassword === "") {
+  //     return Alert.alert("Login failed", `please fill all the fields`);
+  //   }else if (password != cpassword){
+  //     return Alert.alert("Password incorrect", `the password you typed \n do not match`);
+  //   }
+  //     return Alert.alert("Registered successfully!", `You can now log in`);
+  // }
 
 return (
 <View>
@@ -35,107 +33,109 @@ return (
         Register</Text>
     </View>
 
-    <View style={styles.nobg}>
-      
-      {/* email  */}
-        <View style={styles.nobg}> 
-        <TextInput
-          mode="outlined"
-          theme={{ colors: { primary: '#c51365'}}}
-          label="Email"
-          value = {email}
-          style={styles.textbox}
-          autoComplete={false}
+    <View style={{flex: 1}}>
+      <Formik
+      initialValues={{
+        email: '',
+        password: '',
+        cpassword: '',
+        fname: '',
+        lname: ''
+        
+      }}
+      onSubmit={(values, actions)=>{
+        console.log(values);
+      }}
+      >
+        {({ values, handleChange, handleSubmit, errors, touched })=>{
+          <Fragment>
+          {/* email  */}
+            <View style={styles.nobg}> 
+              <TextInput
+                mode="outlined"
+                theme={{ colors: { primary: '#c51365'}}}
+                label="Email"
+                value = {values.email}
+                style={styles.textbox}
+                autoComplete={false}
+                onChangeText={handleChange('email')}
+              />
+            </View>
 
-          onChangeText={(text: string) =>{
-            setEmail(text);
-          }}
-        />
-        </View>
-
-    {/* first name  */}
-      <View style={styles.nobg}>
-        <TextInput
-          mode="outlined"
-          theme={{ colors: { primary: '#c51365'}}}
-          label= "First Name"
-          value = {fname}
-          autoComplete={true}
-          style={styles.textbox}
-
-          onChangeText={(text: string) =>{
-            setFname(text);
-          }}
-        />
-      </View>
-
-    {/* last name  */}
-      <View style={styles.nobg}>
-        <TextInput
-        mode="outlined"
-        theme={{ colors: { primary: '#c51365'}}}
-        label="Last Name"
-          value = {lname}
-          autoComplete={true}
-          style={styles.textbox}
-
-          onChangeText={(text: string) =>{
-            setLname(text);
-          }}
-        />
-      </View>
-
-    {/* password  */}
-      <View style={styles.nobg}>
-      <TextInput
-          mode="outlined"
-          theme={{ colors: { primary: '#c51365'}}}
-          label="Password"
-          value={password}
-          style={styles.textbox}
-          autoComplete={false}
+          {/* first name  */}
+            <View style={styles.nobg}>
+              <TextInput
+                mode="outlined"
+                theme={{ colors: { primary: '#c51365'}}}
+                label= "First Name"
+                value = {values.fname}
+                autoComplete={true}
+                style={styles.textbox}
+                onChangeText={handleChange('fname')}
+              />
+            </View> 
+          {/* last name  */}
+            <View style={styles.nobg}>
+              <TextInput
+              mode="outlined"
+              theme={{ colors: { primary: '#c51365'}}}
+              label="Last Name"
+              value = {values.lname}
+              autoComplete={true}
+              style={styles.textbox}
+              onChangeText={handleChange('lname')}
+              />
+            </View> 
           
-          onChangeText={(text: string) =>{
-            setPassword(text);
-          }}
-          secureTextEntry={visible}
-          right={
-          <TextInput.Icon name={visible ? "eye" : "eye-off"}
-          onPress={() =>{
-              setVisible(!visible);
-          }}
-          />}
-          /> 
-      </View>
-    
-    {/* confirm pass  */}
-      <View style={styles.nobg}>
-        <TextInput
-          mode="outlined"
-          theme={{ colors: { primary: '#c51365'}}}
-          label="Confirm Password"
-          autoComplete={true}
-          style={styles.textbox}
-          onChangeText={(text: string) =>{
-            setCpassword(text);
-          }}
-          secureTextEntry={visible}
-        />
-      </View>
+          {/* password  */}
+       <View style={styles.nobg}>
+            <TextInput
+              mode="outlined"
+              theme={{ colors: { primary: '#c51365'}}}
+              label="Password"
+              value={values.password}
+              style={styles.textbox}
+              autoComplete={false}
+              onChangeText={handleChange('password')}
+              secureTextEntry={visible}
+              right={
+              <TextInput.Icon name={visible ? "eye" : "eye-off"}
+              onPress={() =>{
+                setVisible(!visible);
+              }}
+              />}
+            /> 
+          </View>          
 
+        {/* confirm pass  */}
+          <View style={styles.nobg}>
+            <TextInput
+              mode="outlined"
+              theme={{ colors: { primary: '#c51365'}}}
+              label="Confirm Password"
+              autoComplete={true}
+              style={styles.textbox}
+              onChangeText={handleChange('cpassword')}
+              secureTextEntry={visible}
+            />
+          </View>
 
-     {/* end tbcontainer*/}
+        {/* button login */}
+          <View style={styles.button}>
+            <Button
+              title="Register"
+              buttonStyle={{ backgroundColor: '#c51365', width: 160, height: 40, borderRadius: 30}}
+              //onPress={handleRegister}
+            />
+          </View>
+
+          </Fragment>
+        }}
+
+      </Formik>
+       
+     {/* end all textinput container*/}
     </View>
-
-  {/* button login */}
-    <View style={styles.button}>
-      <Button
-        title="Register"
-        buttonStyle={{ backgroundColor: '#c51365', width: 160, height: 40, borderRadius: 30}}
-        onPress={handleRegister}
-      />
-    </View>
-
 
   {/* end form blur */}
   </View> 
@@ -168,7 +168,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgb(255, 255, 255)',
     width: 250, height: 40, fontSize: 17,
     margin: 10,
-    alignSelf: 'center', justifyContent: 'center'
+    alignSelf: 'center',
+    flex: 1
   },
   button:{
     margin: 15,
