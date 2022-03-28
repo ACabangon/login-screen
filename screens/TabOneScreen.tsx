@@ -5,26 +5,23 @@ import { TextInput } from 'react-native-paper';
 import EditScreenInfo from '../components/EditScreenInfo';
 import { Text, View } from '../components/Themed';
 import * as React from 'react';
-import {Formik} from 'formik';
-//import * as yup from "yup";
+import {Form, Formik} from 'formik';
+import * as yup from "yup";
 
 
 export default function TabOneScreen() {
 
   const [visible, setVisible] = useState(true);
 
-  // const handleRegister = () => {
-
-  //   if (email === "" || fname === "" || lname === "" || password === "" || cpassword === "") {
-  //     return Alert.alert("Login failed", `please fill all the fields`);
-  //   }else if (password != cpassword){
-  //     return Alert.alert("Password incorrect", `the password you typed \n do not match`);
-  //   }
-  //     return Alert.alert("Registered successfully!", `You can now log in`);
-  // }
+  const loginSchema = yup.object({
+    fname: yup.string().required('Field is required'),
+    lname: yup.string().required('Field is required'),
+    password: yup.string().required('Field is required'),
+    cpassword: yup.string().required('Field is required'),
+  });
 
 return (
-<View>
+<View style={styles.nobg}>
 <ImageBackground source={require('../assets/images/backg.jpg')} resizeMode="cover" style={styles.background}>
 <Image source={require('../assets/images/backg.jpg')} style={styles.formblur} resizeMode="cover" blurRadius={10}/>
   <View style={styles.formblur}>
@@ -33,7 +30,7 @@ return (
         Register</Text>
     </View>
 
-    <View style={{flex: 1}}>
+    <View style={styles.nobg}>
       <Formik
       initialValues={{
         email: '',
@@ -44,13 +41,30 @@ return (
         
       }}
       onSubmit={(values, actions)=>{
-        console.log(values);
-      }}
+        if (values.password != values.cpassword){
+          return Alert.alert("Password incorrect", `the password you typed \n do not match`);
+        }
+        return Alert.alert("Registered successfully!", `You can now log in`);
+        
+        }}
+        validationSchema={loginSchema}
+        validate={values => {
+          const errors = {};
+            if (!values.email) {
+              errors.email = 'Email is required!';
+            } else if (
+              !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)
+            ) {
+            errors.email = 'Invalid email address!';
+          }
+          return errors;
+        }}
       >
-        {({ values, handleChange, handleSubmit, errors, touched })=>{
+        
+        {({ values, handleChange, handleSubmit, errors, touched }) => (
           <Fragment>
-          {/* email  */}
-            <View style={styles.nobg}> 
+            {/* email  */}
+            <View style={[styles.inputcontainer, styles.nobg]}> 
               <TextInput
                 mode="outlined"
                 theme={{ colors: { primary: '#c51365'}}}
@@ -58,12 +72,18 @@ return (
                 value = {values.email}
                 style={styles.textbox}
                 autoComplete={false}
+                error={errors.email ? true : false}
                 onChangeText={handleChange('email')}
               />
+              {errors.email &&
+                <Text style={styles.errortext}>
+                  {errors.email}
+                </Text>
+              }
             </View>
 
           {/* first name  */}
-            <View style={styles.nobg}>
+            <View style={[styles.inputcontainer, styles.nobg]}>
               <TextInput
                 mode="outlined"
                 theme={{ colors: { primary: '#c51365'}}}
@@ -72,10 +92,16 @@ return (
                 autoComplete={true}
                 style={styles.textbox}
                 onChangeText={handleChange('fname')}
+                error={errors.fname ? true : false}
               />
+              {errors.fname &&
+                <Text style={styles.errortext}>
+                  {errors.fname}
+                </Text>
+              }
             </View> 
           {/* last name  */}
-            <View style={styles.nobg}>
+            <View style={[styles.inputcontainer, styles.nobg]}>
               <TextInput
               mode="outlined"
               theme={{ colors: { primary: '#c51365'}}}
@@ -84,11 +110,17 @@ return (
               autoComplete={true}
               style={styles.textbox}
               onChangeText={handleChange('lname')}
+              error={errors.lname ? true : false}
               />
+              {errors.lname &&
+                <Text style={styles.errortext}>
+                  {errors.lname}
+                </Text>
+              }
             </View> 
           
           {/* password  */}
-       <View style={styles.nobg}>
+       <View style={[styles.inputcontainer, styles.nobg]}>
             <TextInput
               mode="outlined"
               theme={{ colors: { primary: '#c51365'}}}
@@ -98,6 +130,7 @@ return (
               autoComplete={false}
               onChangeText={handleChange('password')}
               secureTextEntry={visible}
+              error={errors.password ? true : false}
               right={
               <TextInput.Icon name={visible ? "eye" : "eye-off"}
               onPress={() =>{
@@ -105,10 +138,14 @@ return (
               }}
               />}
             /> 
+              {errors.password &&
+                <Text style={styles.errortext}>
+                  {errors.password}
+                </Text>
+              }
           </View>          
-
         {/* confirm pass  */}
-          <View style={styles.nobg}>
+          <View style={[styles.inputcontainer, styles.nobg]}>
             <TextInput
               mode="outlined"
               theme={{ colors: { primary: '#c51365'}}}
@@ -117,23 +154,29 @@ return (
               style={styles.textbox}
               onChangeText={handleChange('cpassword')}
               secureTextEntry={visible}
+              error={errors.cpassword ? true : false}
             />
+            {errors.cpassword &&
+                <Text style={styles.errortext}>
+                  {errors.cpassword}
+                </Text>
+              }
           </View>
 
         {/* button login */}
           <View style={styles.button}>
             <Button
               title="Register"
+              style={{borderRadius: 30}}
               buttonStyle={{ backgroundColor: '#c51365', width: 160, height: 40, borderRadius: 30}}
-              //onPress={handleRegister}
+              onPress={() => {handleSubmit()}}
             />
           </View>
-
           </Fragment>
-        }}
-
+        )}
       </Formik>
-       
+
+
      {/* end all textinput container*/}
     </View>
 
@@ -166,10 +209,11 @@ const styles = StyleSheet.create({
   },
   textbox:{
     backgroundColor: 'rgb(255, 255, 255)',
-    width: 250, height: 40, fontSize: 17,
-    margin: 10,
-    alignSelf: 'center',
-    flex: 1
+    width: 250, height: 40, fontSize: 20,
+    alignSelf: 'center'
+  },
+  inputcontainer:{
+    margin: 10
   },
   button:{
     margin: 15,
@@ -178,4 +222,12 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     backgroundColor: 'transparent'
   },
+  errortext:{
+    flex: 1,
+    marginTop: 45,
+    color: 'red',
+    width: 240,
+    alignSelf: 'center',
+    position: 'absolute'
+  }
 });
